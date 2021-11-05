@@ -7,24 +7,50 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.og.privatemessenger.R
 import com.og.privatemessenger.databinding.DeviceListItemBinding
+import com.og.privatemessenger.model.FoundBluetoothDeviceBroadCastReceiver
+import com.og.privatemessenger.model.di.DaggerDeviceListFragmentComponent
+import com.og.privatemessenger.view_model.BluetoothDeviceListViewModel
 import com.og.privatemessenger.view_model.BluetoothDeviceViewModel
+import javax.inject.Inject
 
 class FoundedDevicesListFragment : Fragment() {
 
+    @Inject
+    lateinit var foundBluetoothDeviceBroadcastReceiver: FoundBluetoothDeviceBroadCastReceiver
 
+    @Inject
+    lateinit var bluetoothDeviceListViewModel: BluetoothDeviceListViewModel
+
+    private lateinit var deviceListRecyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        DaggerDeviceListFragmentComponent.create().inject(this)
         val view = inflater.inflate(R.layout.fragment_founded_devices_list, container, false)
+        deviceListRecyclerView = view.findViewById(R.id.devices_list_recycler_view)
+        requireActivity().registerReceiver(
+            foundBluetoothDeviceBroadcastReceiver,
+            foundBluetoothDeviceBroadcastReceiver.actionFoundIntentFilter
+        )
 
+        deviceListRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
 
-
+        setObservers()
         return view
+    }
+
+    private fun setObservers() {
+        bluetoothDeviceListViewModel.deviceList.observe(viewLifecycleOwner) { devices ->
+            deviceListRecyclerView.adapter = DeviceAdapter(devices)
+        }
     }
 
     inner class DeviceAdapter(private val devices: List<BluetoothDevice>) :
@@ -52,7 +78,7 @@ class FoundedDevicesListFragment : Fragment() {
             }
 
             fun bind(device: BluetoothDevice) {
-                binding.viewModel.bluetoothDevice = device
+                binding.viewModel?.bluetoothDevice = device
             }
         }
     }
