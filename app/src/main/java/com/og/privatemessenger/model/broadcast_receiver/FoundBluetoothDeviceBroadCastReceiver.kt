@@ -1,4 +1,4 @@
-package com.og.privatemessenger.model
+package com.og.privatemessenger.model.broadcast_receiver
 
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
@@ -7,6 +7,12 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.og.privatemessenger.model.bluetooth.BluetoothClientThread
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.io.IOException
 
 private const val ACTION_FOUND = BluetoothDevice.ACTION_FOUND
 private const val TAG = "FoundBluetoothDeviceBroadCastReceiver"
@@ -21,11 +27,18 @@ class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
         if (intent.action == ACTION_FOUND) {
             val device: BluetoothDevice? =
                 intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-            Log.d(TAG, "${device?.address} founded")
+            Log.d(TAG, "${device?.name ?: "No name"} ${device?.address} founded")
             device?.let { foundedDevice ->
                 foundedDevice.name?.let {
-                    deviceList.add(foundedDevice)
-                    deviceListAsLiveData.value = deviceList
+                    CoroutineScope(Job() + Dispatchers.Default).launch {
+                        try {
+                            BluetoothClientThread(foundedDevice).run()
+                            deviceList.add(foundedDevice)
+                            deviceListAsLiveData.value = deviceList
+                        } catch (e: IOException) {
+                            Log.d(TAG, "Device ${foundedDevice.name} has not got app")
+                        }
+                    }
                 }
             }
         }

@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.og.privatemessenger.R
 import com.og.privatemessenger.databinding.DeviceListItemBinding
-import com.og.privatemessenger.model.FoundBluetoothDeviceBroadCastReceiver
-import com.og.privatemessenger.model.di.DaggerDeviceListFragmentComponent
+import com.og.privatemessenger.model.broadcast_receiver.FoundBluetoothDeviceBroadCastReceiver
+import com.og.privatemessenger.model.di.components.DaggerDeviceListFragmentComponent
 import com.og.privatemessenger.view_model.BluetoothDeviceListViewModel
 import com.og.privatemessenger.view_model.BluetoothDeviceViewModel
 import javax.inject.Inject
