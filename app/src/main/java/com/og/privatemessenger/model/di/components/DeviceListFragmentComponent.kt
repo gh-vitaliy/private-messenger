@@ -1,5 +1,7 @@
-package com.og.privatemessenger.model.di
+package com.og.privatemessenger.model.di.components
 
+import com.og.privatemessenger.model.di.modules.BluetoothModule
+import com.og.privatemessenger.model.di.modules.DeviceListModule
 import com.og.privatemessenger.view.FoundedDevicesListFragment
 import dagger.Component
 import javax.inject.Singleton

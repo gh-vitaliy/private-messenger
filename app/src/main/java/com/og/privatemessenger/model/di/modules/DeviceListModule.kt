@@ -1,4 +1,4 @@
-package com.og.privatemessenger.model.di
+package com.og.privatemessenger.model.di.modules
 
 import android.content.BroadcastReceiver
 import com.og.privatemessenger.model.FoundBluetoothDeviceBroadCastReceiver
