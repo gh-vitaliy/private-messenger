@@ -16,6 +16,7 @@ class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
     val actionFoundIntentFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
     private val deviceList: MutableList<BluetoothDevice> = mutableListOf()
     val deviceListAsLiveData: MutableLiveData<List<BluetoothDevice>> = MutableLiveData()
+
     override fun onReceive(context: Context?, intent: Intent) {
         if (intent.action == ACTION_FOUND) {
             val device: BluetoothDevice? =
