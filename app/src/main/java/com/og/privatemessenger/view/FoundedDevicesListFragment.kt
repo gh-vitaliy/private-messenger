@@ -45,7 +45,6 @@ class FoundedDevicesListFragment : Fragment() {
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
-
         return view
     }
 

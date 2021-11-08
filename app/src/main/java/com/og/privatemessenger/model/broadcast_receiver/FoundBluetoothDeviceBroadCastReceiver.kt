@@ -7,21 +7,18 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.og.privatemessenger.model.bluetooth.BluetoothService
+import com.og.privatemessenger.model.bluetooth.BluetoothClientThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.IOException
-import javax.inject.Inject
 
 private const val ACTION_FOUND = BluetoothDevice.ACTION_FOUND
 private const val TAG = "FoundBluetoothDeviceBroadCastReceiver"
 
-class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
 
-    @Inject
-    lateinit var bluetoothService: BluetoothService
+class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
 
     val actionFoundIntentFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
     private val deviceList: MutableList<BluetoothDevice> = mutableListOf()
@@ -36,22 +33,29 @@ class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
                     //to show only devices which has the app
                     CoroutineScope(Job() + Dispatchers.Default).launch {
                         try {
-                            bluetoothService.BluetoothClientThread(foundedDevice).run()
+                            BluetoothClientThread(foundedDevice).run {
+                                bluetoothClientThreads.add(this)
+                                run()
+                            }
                             deviceList.add(foundedDevice)
-                            deviceListAsLiveData.value = deviceList
+                            deviceListAsLiveData.postValue(deviceList)
                         } catch (e: IOException) {
-                            Log.d(TAG, "Device ${foundedDevice.name} has not got app")
+                            Log.d(TAG, "Device ${foundedDevice.name} hasn't got the app")
                         }
                     }
+
                 }
             }
         }
     }
 
     companion object {
+        private val bluetoothClientThreads: MutableList<BluetoothClientThread> = mutableListOf()
+
         private var INSTANCE: FoundBluetoothDeviceBroadCastReceiver? = null
 
         fun newInstance(): FoundBluetoothDeviceBroadCastReceiver {
+            bluetoothClientThreads.forEach { it.cancel() }
             INSTANCE = FoundBluetoothDeviceBroadCastReceiver()
             return INSTANCE!!
         }

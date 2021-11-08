@@ -1,7 +1,7 @@
 package com.og.privatemessenger.model.di.modules
 
 import android.bluetooth.BluetoothAdapter
-import com.og.privatemessenger.model.bluetooth.BluetoothService
+import com.og.privatemessenger.model.bluetooth.BluetoothServerThread
 import com.og.privatemessenger.model.broadcast_receiver.FoundBluetoothDeviceBroadCastReceiver
 import dagger.Module
 import dagger.Provides
@@ -16,16 +16,9 @@ class BluetoothModule {
     }
 
     @Provides
-    fun provideBluetoothService(bluetoothAdapter: BluetoothAdapter): BluetoothService {
-        return BluetoothService(bluetoothAdapter)
+    fun provideBluetoothServerThread(bluetoothAdapter: BluetoothAdapter): BluetoothServerThread {
+        return BluetoothServerThread(bluetoothAdapter)
     }
-
-    @Provides
-    fun provideBluetoothServerThread(bluetoothService: BluetoothService): BluetoothService.BluetoothServerThread {
-        return bluetoothService.BluetoothServerThread()
-    }
-
-
 
     @Provides
     fun provideFoundDeviceBroadcastReceiver(): FoundBluetoothDeviceBroadCastReceiver {

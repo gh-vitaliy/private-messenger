@@ -1,8 +1,7 @@
 package com.og.privatemessenger.model
 
 import android.app.Application
-import com.og.privatemessenger.model.bluetooth.BluetoothService
-import com.og.privatemessenger.model.di.components.AppComponent
+import com.og.privatemessenger.model.bluetooth.BluetoothServerThread
 import com.og.privatemessenger.model.di.components.DaggerAppComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,19 +12,20 @@ import javax.inject.Singleton
 
 @Singleton
 class PrivateMessengerApp : Application() {
-
-    private val appComponent: AppComponent = DaggerAppComponent.create()
-
     @Inject
-    lateinit var bluetoothService: BluetoothService
+    lateinit var bluetoothServerThread: BluetoothServerThread
 
-    init {
-        appComponent.inject(this)
-        //start not blocked
+    override fun onCreate() {
+        DaggerAppComponent.create().inject(this)
+        super.onCreate()
+        //start async bcs it block main thread
         CoroutineScope(Job() + Dispatchers.Default).launch {
-            bluetoothService.BluetoothServerThread().run()
+            bluetoothServerThread.run()
         }
     }
 
-
+    override fun onTerminate() {
+        super.onTerminate()
+        bluetoothServerThread.cancel()
+    }
 }

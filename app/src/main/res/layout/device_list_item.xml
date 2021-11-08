@@ -17,7 +17,9 @@
             android:id="@+id/device_name_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.deviceName}" />
+            android:layout_margin="10dp"
+            android:text="@{viewModel.deviceName}"
+            android:textSize="22sp" />
 
     </LinearLayout>
 </layout>
