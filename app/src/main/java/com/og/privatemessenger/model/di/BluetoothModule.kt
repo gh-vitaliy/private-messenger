@@ -15,7 +15,7 @@ class BluetoothModule {
 
     @Provides
     fun provideFoundDeviceBroadcastReceiver(): FoundBluetoothDeviceBroadCastReceiver {
-        return FoundBluetoothDeviceBroadCastReceiver()
+        return FoundBluetoothDeviceBroadCastReceiver.get()
     }
 
 }

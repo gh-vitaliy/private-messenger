@@ -1,5 +1,6 @@
 package com.og.privatemessenger.view
 
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.og.privatemessenger.R
@@ -25,6 +27,9 @@ class FoundedDevicesListFragment : Fragment() {
     @Inject
     lateinit var bluetoothDeviceListViewModel: BluetoothDeviceListViewModel
 
+    @Inject
+    lateinit var bluetoothAdapter: BluetoothAdapter
+
     private lateinit var deviceListRecyclerView: RecyclerView
 
     override fun onCreateView(
@@ -34,22 +39,36 @@ class FoundedDevicesListFragment : Fragment() {
         DaggerDeviceListFragmentComponent.create().inject(this)
         val view = inflater.inflate(R.layout.fragment_founded_devices_list, container, false)
         deviceListRecyclerView = view.findViewById(R.id.devices_list_recycler_view)
+
+        deviceListRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        }
+
+
+        return view
+    }
+
+    override fun onStart() {
+        super.onStart()
         requireActivity().registerReceiver(
             foundBluetoothDeviceBroadcastReceiver,
             foundBluetoothDeviceBroadcastReceiver.actionFoundIntentFilter
         )
-
-        deviceListRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        }
-
+        bluetoothAdapter.startDiscovery()
         setObservers()
-        return view
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bluetoothAdapter.cancelDiscovery()
+        requireActivity().unregisterReceiver(foundBluetoothDeviceBroadcastReceiver)
+        FoundBluetoothDeviceBroadCastReceiver.newInstance()
     }
 
     private fun setObservers() {
         bluetoothDeviceListViewModel.deviceList.observe(viewLifecycleOwner) { devices ->
-            deviceListRecyclerView.adapter = DeviceAdapter(devices)
+            devices?.let { deviceListRecyclerView.adapter = DeviceAdapter(it) }
         }
     }
 

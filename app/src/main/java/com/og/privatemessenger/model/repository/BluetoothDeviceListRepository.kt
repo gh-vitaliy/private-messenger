@@ -5,12 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import com.og.privatemessenger.model.FoundBluetoothDeviceBroadCastReceiver
 import javax.inject.Inject
 
-class BluetoothDeviceListRepository
-@Inject constructor(private val foundBluetoothDeviceBroadCastReceiver: FoundBluetoothDeviceBroadCastReceiver) {
+private const val TAG = "BluetoothDeviceListRepository"
 
-    var foundedDevicesList: MutableLiveData<List<BluetoothDevice>> = MutableLiveData()
-    fun fetchFoundedDevices() {
-        foundedDevicesList.postValue(foundBluetoothDeviceBroadCastReceiver.foundedDevices.value)
+class BluetoothDeviceListRepository
+@Inject constructor(foundBluetoothDeviceBroadCastReceiver: FoundBluetoothDeviceBroadCastReceiver) {
+
+    var foundedDevicesList: MutableLiveData<List<BluetoothDevice>> = foundBluetoothDeviceBroadCastReceiver.deviceListAsLiveData
+
+    init {
+        foundedDevicesList.value = foundBluetoothDeviceBroadCastReceiver.deviceListAsLiveData.value
     }
+
 
 }
