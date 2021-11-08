@@ -51,18 +51,21 @@ class FoundedDevicesListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        requireActivity().registerReceiver(
+
+        activity?.registerReceiver(
             foundBluetoothDeviceBroadcastReceiver,
             foundBluetoothDeviceBroadcastReceiver.actionFoundIntentFilter
         )
-        bluetoothAdapter.startDiscovery()
+        if (!bluetoothAdapter.isDiscovering)
+            bluetoothAdapter.startDiscovery()
+
         setObservers()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         bluetoothAdapter.cancelDiscovery()
-        requireActivity().unregisterReceiver(foundBluetoothDeviceBroadcastReceiver)
+        activity?.unregisterReceiver(foundBluetoothDeviceBroadcastReceiver)
         FoundBluetoothDeviceBroadCastReceiver.newInstance()
     }
 

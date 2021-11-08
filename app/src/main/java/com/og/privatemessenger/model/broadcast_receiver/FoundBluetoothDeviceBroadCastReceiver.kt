@@ -7,17 +7,21 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.og.privatemessenger.model.bluetooth.BluetoothClientThread
+import com.og.privatemessenger.model.bluetooth.BluetoothService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.IOException
+import javax.inject.Inject
 
 private const val ACTION_FOUND = BluetoothDevice.ACTION_FOUND
 private const val TAG = "FoundBluetoothDeviceBroadCastReceiver"
 
 class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
+
+    @Inject
+    lateinit var bluetoothService: BluetoothService
 
     val actionFoundIntentFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
     private val deviceList: MutableList<BluetoothDevice> = mutableListOf()
@@ -25,14 +29,14 @@ class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent) {
         if (intent.action == ACTION_FOUND) {
-            val device: BluetoothDevice? =
-                intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-            Log.d(TAG, "${device?.name ?: "No name"} ${device?.address} founded")
+            val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+            Log.d(TAG, "${device?.name ?: "Empty name"} ${device?.address} founded")
             device?.let { foundedDevice ->
                 foundedDevice.name?.let {
+                    //to show only devices which has the app
                     CoroutineScope(Job() + Dispatchers.Default).launch {
                         try {
-                            BluetoothClientThread(foundedDevice).run()
+                            bluetoothService.BluetoothClientThread(foundedDevice).run()
                             deviceList.add(foundedDevice)
                             deviceListAsLiveData.value = deviceList
                         } catch (e: IOException) {
@@ -56,5 +60,6 @@ class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
             return INSTANCE ?: newInstance()
         }
     }
+
 
 }
