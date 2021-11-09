@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.util.Log
+import com.og.privatemessenger.model.entity.Message
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject

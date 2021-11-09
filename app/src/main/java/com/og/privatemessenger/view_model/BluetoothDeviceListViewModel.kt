@@ -10,7 +10,7 @@ import javax.inject.Singleton
 class BluetoothDeviceListViewModel
 @Inject constructor(bluetoothDeviceListRepository: BluetoothDeviceListRepository) {
 
-    val deviceList: MutableLiveData<List<BluetoothDevice>> =
+    val deviceList: MutableLiveData<Set<BluetoothDevice>> =
         bluetoothDeviceListRepository.foundedDevicesList
 
 }

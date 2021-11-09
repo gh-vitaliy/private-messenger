@@ -8,7 +8,7 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [BluetoothModule::class, DeviceListModule::class])
+@Component(modules = [AppModule::class, BluetoothModule::class, DeviceListModule::class])
 interface DeviceListFragmentComponent {
     fun inject(userListDevicesListFragment: FoundedDevicesListFragment)
 }

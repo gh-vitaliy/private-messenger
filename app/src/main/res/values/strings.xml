@@ -2,4 +2,5 @@
     <string name="app_name">PrivateMessenger</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="connect_and_chat">Connect and chat</string>
 </resources>

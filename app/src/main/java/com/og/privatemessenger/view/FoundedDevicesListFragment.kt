@@ -3,21 +3,24 @@ package com.og.privatemessenger.view
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.og.privatemessenger.R
 import com.og.privatemessenger.databinding.DeviceListItemBinding
 import com.og.privatemessenger.model.broadcast_receiver.FoundBluetoothDeviceBroadCastReceiver
 import com.og.privatemessenger.model.di.components.DaggerDeviceListFragmentComponent
-import com.og.privatemessenger.model.util.Constants.BLUETOOTH_DEVICE_NAME_TAG
+import com.og.privatemessenger.model.repository.BluetoothDeviceRepository
 import com.og.privatemessenger.view_model.BluetoothDeviceListViewModel
 import com.og.privatemessenger.view_model.BluetoothDeviceViewModel
 import javax.inject.Inject
@@ -34,6 +37,9 @@ class FoundedDevicesListFragment : Fragment() {
 
     @Inject
     lateinit var bluetoothAdapter: BluetoothAdapter
+
+    @Inject
+    lateinit var bluetoothDeviceRepository: BluetoothDeviceRepository
 
     private lateinit var deviceListRecyclerView: RecyclerView
 
@@ -84,7 +90,7 @@ class FoundedDevicesListFragment : Fragment() {
 
     private fun setObservers() {
         bluetoothDeviceListViewModel.deviceList.observe(viewLifecycleOwner) { devices ->
-            devices?.let { deviceListRecyclerView.adapter = DeviceAdapter(it) }
+            devices?.let { deviceListRecyclerView.adapter = DeviceAdapter(it.toList()) }
         }
     }
 
@@ -109,7 +115,7 @@ class FoundedDevicesListFragment : Fragment() {
         inner class DeviceViewHolder(private val binding: DeviceListItemBinding) :
             RecyclerView.ViewHolder(binding.root) {
             init {
-                binding.viewModel = BluetoothDeviceViewModel()
+                binding.viewModel = BluetoothDeviceViewModel(bluetoothDeviceRepository,requireContext())
             }
 
             fun bind(device: BluetoothDevice) {

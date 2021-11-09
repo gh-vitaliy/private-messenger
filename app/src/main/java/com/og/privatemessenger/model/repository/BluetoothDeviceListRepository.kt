@@ -11,7 +11,7 @@ private const val TAG = "BluetoothDeviceListRepository"
 class BluetoothDeviceListRepository
 @Inject constructor(foundBluetoothDeviceBroadCastReceiver: FoundBluetoothDeviceBroadCastReceiver) {
 
-    var foundedDevicesList: MutableLiveData<List<BluetoothDevice>> =
+    var foundedDevicesList: MutableLiveData<Set<BluetoothDevice>> =
         foundBluetoothDeviceBroadCastReceiver.deviceListAsLiveData
 
 }

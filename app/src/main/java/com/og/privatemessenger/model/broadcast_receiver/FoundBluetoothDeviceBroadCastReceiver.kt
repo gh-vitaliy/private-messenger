@@ -16,8 +16,8 @@ private const val TAG = "FoundBluetoothDeviceBroadCastReceiver"
 class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
 
     val actionFoundIntentFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-    private val deviceList: MutableList<BluetoothDevice> = mutableListOf()
-    val deviceListAsLiveData: MutableLiveData<List<BluetoothDevice>> = MutableLiveData()
+    private val deviceList: MutableSet<BluetoothDevice> = mutableSetOf()
+    val deviceListAsLiveData: MutableLiveData<Set<BluetoothDevice>> = MutableLiveData()
 
     override fun onReceive(context: Context?, intent: Intent) {
         if (intent.action == ACTION_FOUND) {
@@ -25,10 +25,12 @@ class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
             Log.d(TAG, "${device?.name ?: "Empty name"} ${device?.address} founded")
             device?.let { foundedDevice ->
                 //add to list devices which has invisible app TAG on bluetooth adapter name
-                if (foundedDevice.name?.endsWith(BLUETOOTH_DEVICE_NAME_TAG) == true) {
+            //    if (foundedDevice.name?.endsWith(BLUETOOTH_DEVICE_NAME_TAG) == true) {
+                if(foundedDevice.name!=null) {
                     deviceList.add(foundedDevice)
                     deviceListAsLiveData.postValue(deviceList)
                 }
+              //  }
             }
         }
     }

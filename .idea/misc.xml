@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/connect_and_chat.xml" value="0.3148148148148148" />
+        <entry key="app/src/main/res/drawable/connect_and_chat_button.xml" value="0.3148148148148148" />
+        <entry key="app/src/main/res/drawable/connect_and_chat_green.xml" value="0.3148148148148148" />
+        <entry key="app/src/main/res/drawable/transparent.xml" value="0.3148148148148148" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.14387031408308004" />
-        <entry key="app/src/main/res/layout/device_list_item.xml" value="0.15070921985815602" />
+        <entry key="app/src/main/res/layout/device_list_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_founded_devices_list.xml" value="0.14387031408308004" />
       </map>
     </option>
