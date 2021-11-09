@@ -63,20 +63,21 @@ class FoundedDevicesListFragment : Fragment() {
         return view
     }
 
+
     override fun onStart() {
         super.onStart()
-        val discoverableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE)
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300)
-        startActivity(discoverableIntent)
-
-        Log.d(TAG, bluetoothAdapter.bondedDevices.size.toString())
+        setDeviceDiscoverable()
 
         activity?.registerReceiver(
             foundBluetoothDeviceBroadcastReceiver,
             foundBluetoothDeviceBroadcastReceiver.actionFoundIntentFilter
         )
-        if (!bluetoothAdapter.isDiscovering)
+
+        if (!bluetoothAdapter.isDiscovering) {
             bluetoothAdapter.startDiscovery()
+            Log.d(TAG, "Discovery starting")
+        }
+
 
         setObservers()
     }
@@ -91,6 +92,14 @@ class FoundedDevicesListFragment : Fragment() {
     private fun setObservers() {
         bluetoothDeviceListViewModel.deviceList.observe(viewLifecycleOwner) { devices ->
             devices?.let { deviceListRecyclerView.adapter = DeviceAdapter(it.toList()) }
+        }
+    }
+
+    private fun setDeviceDiscoverable() {
+        if (bluetoothAdapter.scanMode == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+            val discoverableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE)
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300)
+            startActivity(discoverableIntent)
         }
     }
 
@@ -115,7 +124,7 @@ class FoundedDevicesListFragment : Fragment() {
         inner class DeviceViewHolder(private val binding: DeviceListItemBinding) :
             RecyclerView.ViewHolder(binding.root) {
             init {
-                binding.viewModel = BluetoothDeviceViewModel(bluetoothDeviceRepository,requireContext())
+                binding.viewModel = BluetoothDeviceViewModel(bluetoothDeviceRepository)
             }
 
             fun bind(device: BluetoothDevice) {

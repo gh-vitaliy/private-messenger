@@ -35,8 +35,8 @@ class DeviceListModule {
     }
 
     @Provides
-    fun provideBluetoothDeviceViewModel(bluetoothDeviceRepository: BluetoothDeviceRepository,context: Context): BluetoothDeviceViewModel {
-        return BluetoothDeviceViewModel(bluetoothDeviceRepository,context)
+    fun provideBluetoothDeviceViewModel(bluetoothDeviceRepository: BluetoothDeviceRepository): BluetoothDeviceViewModel {
+        return BluetoothDeviceViewModel(bluetoothDeviceRepository)
     }
 
 

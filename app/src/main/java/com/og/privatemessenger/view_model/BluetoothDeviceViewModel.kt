@@ -1,24 +1,21 @@
 package com.og.privatemessenger.view_model
 
 import android.bluetooth.BluetoothDevice
-import android.content.Context
-import android.text.BoringLayout
 import android.widget.Toast
-import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
+import androidx.lifecycle.viewModelScope
+import com.og.privatemessenger.model.PrivateMessengerApp
 import com.og.privatemessenger.model.repository.BluetoothDeviceRepository
-import kotlinx.coroutines.*
+import com.og.privatemessenger.model.util.ObservableViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
-import java.lang.Exception
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.random.Random
 
 class BluetoothDeviceViewModel(
-    private val bluetoothDeviceRepository: BluetoothDeviceRepository,
-    private val context: Context
-) :
-    BaseObservable() {
+    private val bluetoothDeviceRepository: BluetoothDeviceRepository
+) : ObservableViewModel() {
 
     var bluetoothDevice: BluetoothDevice? = null
         set(value) {
@@ -45,7 +42,7 @@ class BluetoothDeviceViewModel(
         }
 
     fun onClick() {
-        CoroutineScope(Job() + Dispatchers.Default).launch {
+        viewModelScope.launch(Job() + Dispatchers.Default) {
             try {
                 isLoading = true
                 bluetoothDeviceRepository.connect(bluetoothDevice!!)
@@ -53,8 +50,11 @@ class BluetoothDeviceViewModel(
             } catch (ioe: IOException) {
                 isConnected = false
                 withContext(Job() + Dispatchers.Main) {
-                    Toast.makeText(context, "Cant connect to $deviceName", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(
+                        PrivateMessengerApp.INSTANCE?.applicationContext,
+                        "Cant connect to $deviceName",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } finally {
                 isLoading = false
