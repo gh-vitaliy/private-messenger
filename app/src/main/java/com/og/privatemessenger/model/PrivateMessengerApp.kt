@@ -8,15 +8,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class PrivateMessengerApp : Application() {
+
+    val appComponent = DaggerAppComponent.create()
+
     @Inject
     lateinit var bluetoothServerThread: BluetoothServerThread
 
+    init {
+        INSTANCE = this
+    }
+
     override fun onCreate() {
-        DaggerAppComponent.create().inject(this)
+        appComponent.inject(this)
         super.onCreate()
         //start async bcs it block main thread
         CoroutineScope(Job() + Dispatchers.Default).launch {
@@ -27,5 +32,13 @@ class PrivateMessengerApp : Application() {
     override fun onTerminate() {
         super.onTerminate()
         bluetoothServerThread.cancel()
+    }
+
+    companion object {
+        var INSTANCE: PrivateMessengerApp? = null
+
+        fun get(): PrivateMessengerApp {
+            return INSTANCE!!
+        }
     }
 }

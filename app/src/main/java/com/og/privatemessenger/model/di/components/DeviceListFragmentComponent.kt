@@ -1,5 +1,6 @@
 package com.og.privatemessenger.model.di.components
 
+import com.og.privatemessenger.model.di.modules.AppModule
 import com.og.privatemessenger.model.di.modules.BluetoothModule
 import com.og.privatemessenger.model.di.modules.DeviceListModule
 import com.og.privatemessenger.view.FoundedDevicesListFragment

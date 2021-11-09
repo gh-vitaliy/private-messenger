@@ -15,12 +15,12 @@ private const val TAG = "BluetoothDataTransferService"
 
 class BluetoothDataTransferService(socket: BluetoothSocket) {
 
+    val bluetoothSocket = socket
     private val handler = Looper.myLooper()?.let { Handler(it) }
 
     private val inputStream: InputStream = socket.inputStream
     private val outputStream: OutputStream = socket.outputStream
     private val buffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
-
 
     fun read() {
         var numBytes: Int // bytes returned from read()
@@ -47,7 +47,7 @@ class BluetoothDataTransferService(socket: BluetoothSocket) {
     }
 
     //sent message
-    fun sent(message: String, encryptKey: PublicKey) {
+    fun sent(message: String) {
         try {
             outputStream.write(message.toByteArray())
         } catch (e: IOException) {

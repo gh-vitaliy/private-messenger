@@ -10,13 +10,15 @@ import javax.inject.Inject
 
 
 private const val TAG = "BluetoothClientThread"
-class BluetoothServerThread @Inject constructor(private val bluetoothAdapter: BluetoothAdapter) :
-    Thread() {
+
+class BluetoothServerThread
+@Inject constructor(private val bluetoothAdapter: BluetoothAdapter) : Thread() {
 
     private val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
         bluetoothAdapter
             .listenUsingInsecureRfcommWithServiceRecord(
-                "Maxim", UUID.nameUUIDFromBytes("Maxim".toByteArray())
+                bluetoothAdapter.name,
+                UUID.nameUUIDFromBytes(bluetoothAdapter.name.toByteArray())
             )
     }
 

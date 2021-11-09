@@ -2,7 +2,9 @@ package com.og.privatemessenger.view
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +17,12 @@ import com.og.privatemessenger.R
 import com.og.privatemessenger.databinding.DeviceListItemBinding
 import com.og.privatemessenger.model.broadcast_receiver.FoundBluetoothDeviceBroadCastReceiver
 import com.og.privatemessenger.model.di.components.DaggerDeviceListFragmentComponent
+import com.og.privatemessenger.model.util.Constants.BLUETOOTH_DEVICE_NAME_TAG
 import com.og.privatemessenger.view_model.BluetoothDeviceListViewModel
 import com.og.privatemessenger.view_model.BluetoothDeviceViewModel
 import javax.inject.Inject
+
+private const val TAG = "FoundedDevicesListFragment"
 
 class FoundedDevicesListFragment : Fragment() {
 
@@ -32,11 +37,15 @@ class FoundedDevicesListFragment : Fragment() {
 
     private lateinit var deviceListRecyclerView: RecyclerView
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        DaggerDeviceListFragmentComponent.create().inject(this)
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        DaggerDeviceListFragmentComponent.create().inject(this)
         val view = inflater.inflate(R.layout.fragment_founded_devices_list, container, false)
         deviceListRecyclerView = view.findViewById(R.id.devices_list_recycler_view)
 
@@ -50,6 +59,11 @@ class FoundedDevicesListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        val discoverableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE)
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300)
+        startActivity(discoverableIntent)
+
+        Log.d(TAG, bluetoothAdapter.bondedDevices.size.toString())
 
         activity?.registerReceiver(
             foundBluetoothDeviceBroadcastReceiver,
