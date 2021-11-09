@@ -1,10 +1,12 @@
 package com.og.privatemessenger.model.entity
 
+import java.util.*
+
 data class Message(
     val text: ByteArray,
     val type: Message
 ) {
-
+    constructor(text: ByteArray, type: Message, date: Date) : this(text, type)
 
     enum class Message {
         KEY,
