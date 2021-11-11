@@ -8,6 +8,8 @@ import com.og.privatemessenger.model.PrivateMessengerApp
 import com.og.privatemessenger.model.util.Constants.BLUETOOTH_DEVICE_NAME_TAG
 import javax.inject.Inject
 
+private const val TAG = "MainActivity"
+
 class MainActivity : AppCompatActivity() {
 
     @Inject
@@ -29,5 +31,6 @@ class MainActivity : AppCompatActivity() {
             .add(R.id.fragment_container, fragment)
             .commit()
     }
+
 
 }
