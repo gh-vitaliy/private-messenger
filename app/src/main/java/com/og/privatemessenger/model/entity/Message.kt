@@ -4,28 +4,34 @@ import java.util.*
 
 data class Message(
     val text: ByteArray,
-    val type: Message
+    val type: Int
 ) {
-    constructor(text: ByteArray, type: Message, date: Date) : this(text, type)
-
-    enum class Message {
-        KEY,
-        TEXT,
-        ADDRESS
-    }
+    constructor(text: ByteArray, type: Int, date: Date) : this(text, type)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as com.og.privatemessenger.model.entity.Message
+        other as Message
 
         if (!text.contentEquals(other.text)) return false
+        if (type != other.type) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return text.contentHashCode()
+        var result = text.contentHashCode()
+        result = 31 * result + type
+        return result
     }
+
+    companion object {
+        const val MESSAGE_KEY = 0
+        const val MESSAGE_SEND = 1
+        const val MESSAGE_READ = 2
+        const val MESSAGE_TOAST = 3
+        const val MESSAGE_WRITTEN = 4
+    }
+
 }
