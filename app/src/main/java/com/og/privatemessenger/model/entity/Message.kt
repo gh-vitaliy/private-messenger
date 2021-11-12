@@ -4,9 +4,9 @@ import java.util.*
 
 data class Message(
     val text: ByteArray,
-    val type: Int
+    val type: Int,
+    val date: Date
 ) {
-    constructor(text: ByteArray, type: Int, date: Date) : this(text, type)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

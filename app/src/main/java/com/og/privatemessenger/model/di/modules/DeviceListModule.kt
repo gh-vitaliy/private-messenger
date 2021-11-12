@@ -1,7 +1,5 @@
 package com.og.privatemessenger.model.di.modules
 
-import android.content.Context
-import androidx.databinding.BaseObservable
 import com.og.privatemessenger.model.PrivateMessengerApp
 import com.og.privatemessenger.model.broadcast_receiver.FoundBluetoothDeviceBroadCastReceiver
 import com.og.privatemessenger.model.repository.BluetoothDeviceListRepository

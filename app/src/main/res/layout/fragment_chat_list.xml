@@ -10,7 +10,7 @@
         android:layout_height="match_parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        style="@style/Theme.FAB"
+        style="@style/Theme.PrivateMessenger.FAB"
         android:contentDescription="@string/add_chat_fab_description" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

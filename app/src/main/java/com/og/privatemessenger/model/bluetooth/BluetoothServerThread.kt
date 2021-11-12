@@ -1,10 +1,10 @@
 package com.og.privatemessenger.model.bluetooth
 
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.util.Log
-import com.og.privatemessenger.model.entity.Message
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
@@ -13,13 +13,16 @@ import javax.inject.Inject
 private const val TAG = "BluetoothClientThread"
 
 class BluetoothServerThread
-@Inject constructor(private val bluetoothAdapter: BluetoothAdapter) : Thread() {
+@Inject constructor(
+    private val bluetoothAdapter: BluetoothAdapter,
+    bluetoothDevice: BluetoothDevice
+) : Thread() {
 
     private val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
         bluetoothAdapter
             .listenUsingInsecureRfcommWithServiceRecord(
                 bluetoothAdapter.name,
-                UUID.nameUUIDFromBytes(bluetoothAdapter.name.toByteArray())
+                UUID.nameUUIDFromBytes(bluetoothDevice.name.toByteArray())
             )
     }
 
@@ -46,7 +49,7 @@ class BluetoothServerThread
         try {
             mmServerSocket?.close()
         } catch (e: IOException) {
-            Log.e(TAG, "Could not close the connect socket", e)
+            Log.e(TAG, e.message, e)
         }
     }
 

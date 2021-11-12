@@ -19,11 +19,6 @@ class BluetoothModule {
     }
 
     @Provides
-    fun provideBluetoothServerThread(bluetoothAdapter: BluetoothAdapter): BluetoothServerThread {
-        return BluetoothServerThread(bluetoothAdapter)
-    }
-
-    @Provides
     fun provideFoundDeviceBroadcastReceiver(): FoundBluetoothDeviceBroadCastReceiver {
         return FoundBluetoothDeviceBroadCastReceiver.get()
     }

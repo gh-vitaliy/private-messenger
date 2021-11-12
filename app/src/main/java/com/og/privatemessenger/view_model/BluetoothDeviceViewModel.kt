@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.widget.Toast
 import androidx.databinding.Bindable
 import androidx.lifecycle.viewModelScope
+import com.og.privatemessenger.R
 import com.og.privatemessenger.model.PrivateMessengerApp
 import com.og.privatemessenger.model.repository.BluetoothDeviceRepository
 import com.og.privatemessenger.model.util.ObservableViewModel
@@ -13,9 +14,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
-class BluetoothDeviceViewModel(
-    private val bluetoothDeviceRepository: BluetoothDeviceRepository
-) : ObservableViewModel() {
+private const val TAG = "BluetoothDeviceViewModel"
+
+class BluetoothDeviceViewModel(private val bluetoothDeviceRepository: BluetoothDeviceRepository) :
+    ObservableViewModel() {
 
     var bluetoothDevice: BluetoothDevice? = null
         set(value) {
@@ -52,7 +54,7 @@ class BluetoothDeviceViewModel(
                 withContext(Job() + Dispatchers.Main) {
                     Toast.makeText(
                         PrivateMessengerApp.INSTANCE?.applicationContext,
-                        "Cant connect to $deviceName",
+                        R.string.unable_to_connect,
                         Toast.LENGTH_SHORT
                     ).show()
                 }

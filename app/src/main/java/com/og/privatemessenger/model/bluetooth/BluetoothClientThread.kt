@@ -1,28 +1,41 @@
 package com.og.privatemessenger.model.bluetooth
 
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.util.Log
+import com.og.privatemessenger.model.di.components.DaggerBluetoothDeviceListComponent
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
 private const val TAG = "BluetoothClientThread"
 
-class BluetoothClientThread
-@Inject constructor(bluetoothDevice: BluetoothDevice) : Thread() {
+class BluetoothClientThread(bluetoothDevice: BluetoothDevice) :
+    Thread() {
+
+    @Inject
+    lateinit var bluetoothAdapter: BluetoothAdapter
+
+    init {
+        DaggerBluetoothDeviceListComponent.create().inject(this)
+    }
 
     private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
         bluetoothDevice.createInsecureRfcommSocketToServiceRecord(
-            UUID.nameUUIDFromBytes(bluetoothDevice.address.toByteArray())
+            UUID.nameUUIDFromBytes(bluetoothAdapter.name.toByteArray())
         )
     }
 
     override fun run() {
 
         mmSocket?.let { socket ->
+            if (socket.isConnected)
+                socket.close()
+
             socket.connect()
             Log.d(TAG, "Connected ${socket.remoteDevice.let { "${it.name} ${it.address}" }}")
+
             //manageMyConnectedSocket(socket)
         }
     }
