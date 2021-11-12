@@ -7,6 +7,8 @@
         <entry key="app/src/main/res/drawable/connect_and_chat.xml" value="0.3148148148148148" />
         <entry key="app/src/main/res/drawable/connect_and_chat_button.xml" value="0.3148148148148148" />
         <entry key="app/src/main/res/drawable/connect_and_chat_green.xml" value="0.3148148148148148" />
+        <entry key="app/src/main/res/drawable/done_icon.xml" value="0.321025641025641" />
+        <entry key="app/src/main/res/drawable/reload_icon.xml" value="0.321025641025641" />
         <entry key="app/src/main/res/drawable/transparent.xml" value="0.3148148148148148" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.14387031408308004" />
         <entry key="app/src/main/res/layout/device_list_item.xml" value="0.25" />
@@ -14,6 +16,7 @@
         <entry key="app/src/main/res/layout/fragment_founded_devices_list.xml" value="0.14387031408308004" />
         <entry key="app/src/main/res/layout/main_app_bar.xml" value="0.165" />
         <entry key="app/src/main/res/menu/chats_menu.xml" value="0.1609375" />
+        <entry key="app/src/main/res/menu/device_list_menu.xml" value="0.3098958333333333" />
       </map>
     </option>
   </component>

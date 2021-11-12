@@ -29,26 +29,37 @@
                 android:id="@+id/device_name_text_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
                 android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
                 android:text="@{viewModel.deviceName}"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/connect_indicator"
+                app:layout_constraintEnd_toStartOf="@id/connection_info_container"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/connect_indicator"
+            <FrameLayout
+                android:id="@+id/connection_info_container"
                 android:layout_width="wrap_content"
-                android:indeterminate="true"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="5dp"
-                android:layout_marginVertical="2dp"
-                android:visibility="@{viewModel.isLoading() ?  View.VISIBLE : View.INVISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/connect_indicator"
+                    style="@style/Theme.PrivateMessenger.CircularIndicator"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:visibility="@{viewModel.isLoading() ?  View.VISIBLE : View.INVISIBLE}" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/done_icon"
+                    android:visibility="@{viewModel.isConnected || viewModel.isConnectedByServer ? View.VISIBLE : View.GONE}" />
+            </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

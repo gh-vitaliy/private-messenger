@@ -1,11 +1,11 @@
 package com.og.privatemessenger.view_model
 
-import android.bluetooth.BluetoothDevice
 import android.widget.Toast
 import androidx.databinding.Bindable
 import androidx.lifecycle.viewModelScope
 import com.og.privatemessenger.R
 import com.og.privatemessenger.model.PrivateMessengerApp
+import com.og.privatemessenger.model.entity.BluetoothDeviceToConnect
 import com.og.privatemessenger.model.repository.BluetoothDeviceRepository
 import com.og.privatemessenger.model.util.ObservableViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,15 +19,16 @@ private const val TAG = "BluetoothDeviceViewModel"
 class BluetoothDeviceViewModel(private val bluetoothDeviceRepository: BluetoothDeviceRepository) :
     ObservableViewModel() {
 
-    var bluetoothDevice: BluetoothDevice? = null
+    var bluetoothDevice: BluetoothDeviceToConnect? = null
         set(value) {
             field = value
             notifyChange()
         }
 
+
     @get:Bindable
     val deviceName: String
-        get() = bluetoothDevice?.name.toString()
+        get() = bluetoothDevice?.device?.name.toString()
 
     @get:Bindable
     var isLoading: Boolean = false
@@ -43,25 +44,33 @@ class BluetoothDeviceViewModel(private val bluetoothDeviceRepository: BluetoothD
             field = value
         }
 
-    fun onClick() {
-        viewModelScope.launch(Job() + Dispatchers.Default) {
-            try {
-                isLoading = true
-                bluetoothDeviceRepository.connect(bluetoothDevice!!)
-                isConnected = true
-            } catch (ioe: IOException) {
-                isConnected = false
-                withContext(Job() + Dispatchers.Main) {
-                    Toast.makeText(
-                        PrivateMessengerApp.INSTANCE?.applicationContext,
-                        R.string.unable_to_connect,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } finally {
-                isLoading = false
-            }
+    @get:Bindable
+    val isConnectedByServer: Boolean
+        get() {
+            notifyChange()
+            return bluetoothDevice?.isConnected?.value == true
         }
+
+
+    fun onClick() {
+        val context = PrivateMessengerApp.INSTANCE?.applicationContext
+        if (!isConnected || !isConnectedByServer)
+            viewModelScope.launch(Job() + Dispatchers.Default) {
+                try {
+                    isLoading = true
+                    bluetoothDeviceRepository.connect(bluetoothDevice!!.device)
+                    isConnected = true
+                } catch (ioe: IOException) {
+                    withContext(Job() + Dispatchers.Main) {
+                        Toast.makeText(context, R.string.unable_to_connect, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                } finally {
+                    isLoading = false
+                }
+            }
+        else
+            Toast.makeText(context, R.string.you_already_connected, Toast.LENGTH_SHORT).show()
     }
 
 }

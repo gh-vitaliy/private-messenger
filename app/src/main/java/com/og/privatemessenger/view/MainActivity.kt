@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.og.privatemessenger.R
 import com.og.privatemessenger.model.PrivateMessengerApp
+import com.og.privatemessenger.model.broadcast_receiver.FoundBluetoothDeviceBroadCastReceiver
 import com.og.privatemessenger.model.util.Constants.BLUETOOTH_DEVICE_NAME_TAG
 import javax.inject.Inject
 
@@ -15,8 +16,13 @@ private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
+
     @Inject
     lateinit var bluetoothAdapter: BluetoothAdapter
+
+    @Inject
+    lateinit var foundBluetoothDeviceBroadcastReceiver: FoundBluetoothDeviceBroadCastReceiver
+
     override fun onCreate(savedInstanceState: Bundle?) {
         PrivateMessengerApp.INSTANCE?.appComponent?.inject(this)
         super.onCreate(savedInstanceState)
@@ -28,6 +34,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        registerReceiver(
+            foundBluetoothDeviceBroadcastReceiver,
+            foundBluetoothDeviceBroadcastReceiver.actionFoundIntentFilter
+        )
+
         showPermissionsDialog()
 
         val fragment = FoundedDevicesListFragment()
@@ -35,6 +46,11 @@ class MainActivity : AppCompatActivity() {
             .beginTransaction()
             .add(R.id.fragment_container, fragment)
             .commit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(foundBluetoothDeviceBroadcastReceiver)
     }
 
 

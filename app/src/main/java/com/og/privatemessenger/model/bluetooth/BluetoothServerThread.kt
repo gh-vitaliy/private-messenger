@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
@@ -26,6 +27,8 @@ class BluetoothServerThread
             )
     }
 
+    val isConnected: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
+
     override fun run() {
         var shouldLoop = true
         while (shouldLoop) {
@@ -36,6 +39,7 @@ class BluetoothServerThread
                 shouldLoop = false
                 null
             }
+            isConnected.postValue(true)
             socket?.also {
                 //  manageMyConnectedSocket(it)
                 mmServerSocket?.close()

@@ -9,8 +9,11 @@
     <string name="bluetooth_permission_message">Please accept location permission to use bluetooth</string>
     <string name="ok">OK</string>
     <string name="unable_to_connect">Unable to connect</string>
+    <string name="you_already_connected">You already connected</string>
 
     <!--    content descriptions-->
     <string name="account_settings_description">account settings</string>
     <string name="add_chat_fab_description">add chat button</string>
+    <string name="start_discovery_description">start discovery</string>
+    <string name="start_discovery">Start discovery</string>
 </resources>

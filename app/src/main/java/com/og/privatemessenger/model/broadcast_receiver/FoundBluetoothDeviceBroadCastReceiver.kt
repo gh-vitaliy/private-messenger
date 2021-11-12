@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.og.privatemessenger.model.bluetooth.BluetoothServerThread
 import com.og.privatemessenger.model.di.components.DaggerAppComponent
+import com.og.privatemessenger.model.entity.BluetoothDeviceToConnect
 import com.og.privatemessenger.model.util.Constants.BLUETOOTH_DEVICE_NAME_TAG
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,8 +32,8 @@ class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
     }
 
     val actionFoundIntentFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-    private val deviceList: MutableSet<BluetoothDevice> = mutableSetOf()
-    val deviceListAsLiveData: MutableLiveData<Set<BluetoothDevice>> = MutableLiveData()
+    private val deviceList: MutableSet<BluetoothDeviceToConnect> = mutableSetOf()
+    val deviceListAsLiveData: MutableLiveData<Set<BluetoothDeviceToConnect>> = MutableLiveData()
 
     override fun onReceive(context: Context?, intent: Intent) {
         if (intent.action == ACTION_FOUND) {
@@ -42,12 +43,15 @@ class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
                 //add to list devices which has invisible app TAG on bluetooth adapter name
                 if (foundedDevice.name != null
                     && foundedDevice.name?.endsWith(BLUETOOTH_DEVICE_NAME_TAG) == true
+                    && !deviceList.any { it.device.address == foundedDevice.address }
                 ) {
+                    val serverThread = BluetoothServerThread(bluetoothAdapter, foundedDevice)
                     CoroutineScope(Job() + Dispatchers.Default).launch {
-                        deviceList.add(foundedDevice)
-                        deviceListAsLiveData.postValue(deviceList)
                         //start server thread for all founded device which has the app
-                        BluetoothServerThread(bluetoothAdapter, foundedDevice).run()
+                        deviceList
+                            .add(BluetoothDeviceToConnect(foundedDevice, serverThread.isConnected))
+                        deviceListAsLiveData.postValue(deviceList)
+                        serverThread.run()
                     }
                 }
             }
@@ -57,7 +61,7 @@ class FoundBluetoothDeviceBroadCastReceiver : BroadcastReceiver() {
     companion object {
         private var INSTANCE: FoundBluetoothDeviceBroadCastReceiver? = null
 
-        fun newInstance(): FoundBluetoothDeviceBroadCastReceiver {
+        private fun newInstance(): FoundBluetoothDeviceBroadCastReceiver {
             INSTANCE = FoundBluetoothDeviceBroadCastReceiver()
             return INSTANCE!!
         }
